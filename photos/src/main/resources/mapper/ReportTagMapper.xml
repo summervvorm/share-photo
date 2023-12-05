@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.ReportTagMapper">
+    <insert id="batchInsertReportTags" parameterType="java.util.List">
+        insert into t_report_tag (user_id, pic_id, tags, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId}, #{item.picId}, #{item.tags}, #{item.createTime})
+        </foreach>
+    </insert>
+
+    <select id="getReportTagsList" resultMap="reportTagResultMap">
+        SELECT rt.id, rt.user_id, rt.pic_id, rt.tags, rt.create_time, p.pic_name, u.user_nickname
+        FROM t_report_tag rt
+                 JOIN t_picture p ON rt.pic_id = p.pic_id
+                 JOIN t_user u ON rt.user_id = u.user_id
+        where rt.tags like CONCAT('%', #{keyword}, '%')
+           or u.user_nickname like CONCAT('%', #{keyword}, '%')
+    </select>
+    <resultMap id="reportTagResultMap" type="com.example.photos.model.dto.ReportTagsDTO">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="picId" column="pic_id"/>
+        <result property="tags" column="tags"/>
+        <result property="createTime" column="create_time"/>
+        <result property="picName" column="pic_name"/>
+        <result property="userName" column="user_nickname"/>
+    </resultMap>
+
+    <delete id="batchDeleteReportTag" parameterType="java.util.List">
+        delete from t_report_tag
+        where id in
+        <foreach collection="reportTagsDTOList" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+    
+</mapper>

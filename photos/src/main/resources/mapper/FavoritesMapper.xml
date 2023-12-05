@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.FavoritesMapper">
+    <select id="selectFavIdList" resultType="com.example.photos.entity.Favorites">
+        SELECT *
+        FROM t_favorites
+        WHERE fav_user_id = #{userId}
+    </select>
+    <insert id="insertFavList">
+        INSERT
+        IGNORE INTO t_favorites (fav_pic_id,fav_user_id,fav_list_id,fav_collect_name,create_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.favPicId}, #{item.favUserId},#{item.favListId},#{item.favCollectName},#{item.createTime})
+        </foreach>
+    </insert>
+    <select id="getFavPicIdByUserId" resultType="java.lang.Integer">
+        SELECT fav_pic_id
+        FROM t_favorites
+        WHERE fav_user_id = #{userId}
+    </select>
+
+</mapper>

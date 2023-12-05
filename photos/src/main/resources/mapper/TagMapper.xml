@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.TagMapper">
+    <insert id="insertTagsIfNotExists" parameterType="java.util.List"
+            useGeneratedKeys="true">
+        INSERT IGNORE INTO t_tag (tag_name,create_time) VALUES
+        <foreach item="tagName" collection="list" separator=",">
+            (#{tagName},NOW())
+        </foreach>
+    </insert>
+
+    <select id="selectTagsId"  resultType="com.example.photos.entity.Tag">
+        SELECT * FROM t_tag WHERE tag_name IN
+        <foreach item="tagNames" collection="list" open="(" separator="," close=")">
+            #{tagNames}
+        </foreach>
+    </select>
+
+    <select id="selectTagsByPicIds" resultType="com.example.photos.entity.PictureTag">
+        SELECT *
+        FROM t_picture_tag
+        WHERE pic_id IN
+        <foreach collection="pictures" item="pic" open="(" close=")" separator=",">
+            #{pic.picId}
+        </foreach>
+    </select>
+</mapper>

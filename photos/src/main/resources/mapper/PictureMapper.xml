@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.PictureMapper">
+    <select id="selectIdByName" resultType="int">
+        SELECT pic_id
+        FROM t_picture
+        WHERE t_picture.pic_name = #{name}
+    </select>
+
+    <insert id="insertOne" parameterType="com.example.photos.entity.Picture">
+        INSERT
+        IGNORE INTO t_picture (pic_name,pic_collections,pic_color,pic_by_id,pic_sign,pic_creat_time,status,height,width,size)
+VALUES (
+        #{picName},
+        #{picCollections},
+        #{picColor},
+        #{picById},
+        #{picSign},
+        #{picCreatTime},
+        #{status},
+        #{height},
+        #{width},
+        #{size}
+        )
+
+    </insert>
+
+    <select id="selectPicturesByHot" resultType="com.example.photos.entity.Picture">
+        SELECT *
+        FROM t_picture
+        WHERE pic_creat_time >= DATE_SUB(NOW(), INTERVAL 90 DAY)
+        ORDER BY (pic_likes + pic_collections) DESC LIMIT 40;
+    </select>
+    <select id="selectPictureByNew" resultType="com.example.photos.entity.Picture">
+        SELECT *
+        FROM t_picture
+        ORDER BY pic_creat_time DESC LIMIT 40
+    </select>
+
+    <select id="countLikesAndFavoritesByUserId" resultType="java.util.Map">
+        SELECT SUM(pic_likes)       AS likes_count,    -- 点赞数
+               SUM(pic_collections) AS favorites_count -- 收藏数
+        FROM t_picture
+        WHERE pic_by_id = #{userId}
+    </select>
+
+    <update id="updatePicLikes" parameterType="java.util.Map">
+        UPDATE t_picture
+        SET pic_likes = pic_likes + #{likesCount}
+        WHERE pic_id = #{picId}
+    </update>
+
+    <update id="updatePicFav" parameterType="java.util.Map">
+        UPDATE t_picture
+        SET pic_collections = pic_collections + #{favCount}
+        WHERE pic_id = #{picId}
+    </update>
+
+    <update id="updatePicFavByDelFavList" parameterType="java.util.Map">
+        UPDATE t_picture
+        SET pic_collections = pic_collections- 1
+        WHERE pic_id IN (
+            SELECT fav_pic_id
+            from t_favorites
+            where fav_user_id = #{userId}
+              and fav_list_id = #{favListId}
+              and fav_pic_id in (SELECT fav_pic_id
+                                 FROM t_favorites
+                                 GROUP BY fav_pic_id
+                                 HAVING COUNT(*) = 1)
+        );
+    </update>
+
+    <select id="selectPicturesByKeywordWithSort" resultType="com.example.photos.entity.Picture">
+        SELECT p.* FROM t_picture p
+        WHERE (p.pic_id IN (
+        SELECT pic_id FROM t_picture_tag
+        WHERE tag_id IN (
+        SELECT id FROM t_tag
+        WHERE tag_name LIKE CONCAT('%', #{keyword}, '%')
+        )
+        )
+        OR p.pic_sign LIKE CONCAT('%', #{keyword}, '%'))
+        AND p.pic_color LIKE CONCAT('%', #{color}, '%')
+        AND p.pic_creat_time &gt; #{startTime}
+        AND p.pic_creat_time &lt;= #{endTime}
+        and p.height>=#{picHeight}
+        and p.width>=#{picWidth}
+        and p.status=#{status}
+        <if test="orderByLikes">
+            ORDER BY p.pic_likes DESC
+        </if>
+        <if test="!orderByLikes">
+            ORDER BY p.pic_creat_time DESC
+        </if>
+    </select>
+
+    <select id="getPicStats" resultType="com.example.photos.model.dto.PictureStatsDTO">
+        SELECT DATE(pic_creat_time) AS pic_create_time, COUNT(*) AS COUNT FROM t_picture GROUP BY pic_create_time;
+    </select>
+
+    <select id="selectUploadPicturesByCondition" resultType="com.example.photos.entity.Picture">
+        SELECT p.* FROM t_picture p
+        WHERE (p.pic_id IN (
+        SELECT pic_id FROM t_picture_tag
+        WHERE tag_id IN (
+        SELECT id FROM t_tag
+        WHERE tag_name LIKE CONCAT('%', #{keyword}, '%')
+        )
+        )
+        OR p.pic_sign LIKE CONCAT('%', #{keyword}, '%'))
+        AND p.status = #{status}
+        and p.pic_by_id = #{userId}
+        <if test="orderByLikes">
+            ORDER BY p.pic_likes DESC
+        </if>
+        <if test="!orderByLikes">
+            ORDER BY p.pic_creat_time DESC
+        </if>
+    </select>
+
+
+
+</mapper>

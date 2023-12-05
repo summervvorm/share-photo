@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.NotificationMapper">
+
+    <select id="getNotificationSenderList" resultMap="NotificationSenderListVO">
+        SELECT sender,
+               SUM(CASE WHEN state = '未读' THEN 1 ELSE 0 END) AS COUNT
+        FROM t_notification
+        WHERE receiver_id = #{userId}
+        GROUP BY sender;
+    </select>
+
+    <resultMap id="NotificationSenderListVO" type="com.example.photos.model.vo.NotificationSenderListVO">
+        <result column="sender" property="name"/>
+        <result column="count" property="unreadNumber"/>
+    </resultMap>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert IGNORE into t_notification (title,sender_id,sender,receiver_id,content,state,create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.title}, #{item.senderId}, #{item.sender}, #{item.receiverId},#{item.content},#{item.state},#{item.createTime})
+        </foreach>
+    </insert>
+
+</mapper>

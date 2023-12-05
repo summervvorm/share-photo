@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.RoleMapper">
+    <select id="selectListRoles" resultType="java.lang.String">
+        SELECT role_name
+        FROM t_role r
+                 LEFT JOIN t_user_role ur ON r.id = ur.role_id
+        WHERE ur.user_id = #{userId}
+    </select>
+    <resultMap id="resourceRoleResultMap" type="com.example.photos.model.dto.ResourceRoleDTO">
+        <id property="id" column="id"/>
+        <result property="url" column="url"/>
+        <result property="requestMethod" column="request_method"/>
+        <collection property="roleList" ofType="java.lang.String">
+            <constructor>
+                <arg column="role_name"/>
+            </constructor>
+        </collection>
+    </resultMap>
+    <select id="listResourceRoles" resultMap="resourceRoleResultMap">
+        select re.id as id,
+               url,
+               request_method,
+               role_name
+        from t_resource re
+                 left join t_role_resource rr on re.id = rr.resource_id
+                 left join t_role ro on rr.role_id = ro.id
+        where re.parent_id is not null
+          and is_anonymous = 0;
+    </select>
+
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.PictureTagMapper">
+    <insert id="insertOne" parameterType="com.example.photos.entity.PictureTag">
+        INSERT IGNORE INTO t_picture_tag (pic_id,tag_id,tag_name,create_time)
+VALUES (#{picId},#{tagId},#{tagName},#{createTime})
+
+    </insert>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert IGNORE into t_picture_tag (pic_id,tag_id,tag_name,create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.picId}, #{item.tagId}, #{item.tagName}, #{item.createTime})
+        </foreach>
+
+    </insert>
+
+    <select id="selectTagsWordCloudDate" resultType="com.example.photos.model.dto.PictureTagsWordCloudDTO">
+        SELECT tag_name as name, COUNT(*) AS value
+        FROM t_picture_tag
+        GROUP BY tag_name;
+    </select>
+
+
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.UserMapper">
+    <select id="checkUser" resultType="com.example.photos.entity.User">
+        SELECT *
+        FROM t_user
+        WHERE t_user.user_id=#{userId} AND t_user.user_password=#{password};
+    </select>
+
+    <select id="checkEmails" resultType="java.lang.String">
+        SELECT user_email
+        FROM t_user
+        WHERE t_user.user_email=#{email}
+    </select>
+
+    <update id="addExperience" parameterType="java.lang.Integer">
+        update t_user set experience = experience + 1 where user_id = #{userId}
+    </update>
+
+    <select id="getUserInfoList" resultType="com.example.photos.entity.User">
+        select *
+        from t_user
+        where t_user.user_nickname LIKE CONCAT('%', #{keyword}, '%')
+        or t_user.user_id LIKE CONCAT('%', #{keyword}, '%')
+        or t_user.user_sign LIKE CONCAT('%', #{keyword}, '%')
+        or t_user.user_email LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <update id="updateUserExperience" parameterType="java.lang.Integer">
+        update t_user set experience = #{experience} where user_id=#{userId}
+    </update>
+
+</mapper>

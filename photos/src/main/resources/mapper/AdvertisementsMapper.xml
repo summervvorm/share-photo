@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.AdvertisementsMapper">
+    <select id="getAdvertisementList" resultType="com.example.photos.entity.Advertisements">
+        SELECT *
+        FROM t_advertisements
+        where title LIKE CONCAT('%', #{keyword}, '%')
+           or description like concat('%', #{keyword}, '%')
+    </select>
+
+    <delete id="batchDeleteAd" parameterType="java.util.List">
+        delete from t_advertisements
+        where id in
+        <foreach collection="advertisements" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+    <select id="getRandList" resultType="com.example.photos.entity.Advertisements">
+        select *
+        from t_advertisements
+        where start_date &lt;= #{currentTime}
+        and end_date >= #{currentTime}
+        order by RAND() DESC LIMIT 4
+
+    </select>
+
+
+</mapper>

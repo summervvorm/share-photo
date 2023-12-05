@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.photos.mapper.FollowMapper">
+    <select id="selectFollowList" resultType="com.example.photos.entity.Follow">
+        SELECT *
+        FROM t_follow
+        WHERE fol_fans_id=#{userId}
+    </select>
+    <select id="selectFansList" resultType="com.example.photos.entity.Follow">
+        SELECT *
+        FROM t_follow
+        WHERE fol_user_id=#{userId}
+    </select>
+    <select id="selectFansCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_follow WHERE fol_user_id = #{userId}
+    </select>
+
+    <select id="selectFansDTOList" resultMap="fansDTOResultMap">
+        SELECT f.fol_user_id, f.fol_fans_id, u.user_nickname,u.user_header_image,u.user_sign,f.create_time
+        FROM t_follow f
+                 JOIN t_user u ON f.fol_fans_id = u.user_id
+        WHERE f.fol_user_id = #{userId}
+    </select>
+    <resultMap id="fansDTOResultMap" type="com.example.photos.model.dto.FansDTO">
+        <result column="fol_user_id" property="userId"/>
+        <result column="fol_fans_id" property="fansId"/>
+        <result column="user_nickname" property="fansName"/>
+        <result column="user_header_image" property="fansAvatar"/>
+        <result column="user_sign" property="fansSign"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+    <select id="selectFollowTOList" resultMap="followDTOResultMap">
+        SELECT f.fol_user_id, f.fol_fans_id, u.user_nickname,u.user_header_image,u.user_sign,f.create_time
+        FROM t_follow f
+                 JOIN t_user u ON f.fol_user_id = u.user_id
+        WHERE f.fol_fans_id = #{userId}
+    </select>
+    <resultMap id="followDTOResultMap" type="com.example.photos.model.dto.FollowDTO">
+        <result column="fol_user_id" property="folId"/>
+        <result column="fol_fans_id" property="userId"/>
+        <result column="user_nickname" property="folName"/>
+        <result column="user_header_image" property="folAvatar"/>
+        <result column="user_sign" property="folSign"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+
+</mapper>
