@@ -16,6 +16,20 @@ import java.util.regex.Pattern;
 @Slf4j
 public class CommonUtil {
 
+    private static IdWorker idWorker;
+    /**
+     * @param
+     * @return Long
+     * @author raolongxiang
+     * @description 获得新的唯一id
+     * @date 2023/12/6
+     */
+    public static Long next() {
+        if(idWorker == null){
+            idWorker = IdWorker.getInstance();
+        }
+        return idWorker.nextId();
+    }
 
     public static JSONObject errorJson(StatusCodeEnum errorEnum) {
         JSONObject resultJson = new JSONObject();

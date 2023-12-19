@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_ARRAY)
 public class UserDetailsDTO implements UserDetails {
 
-    private int UserId;
+    private Integer UserId;
 
     private String username;
 
