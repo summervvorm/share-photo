@@ -8,6 +8,7 @@ import com.example.photos.mapper.UserImageActionsMapper;
 import com.example.photos.model.vo.UserActionVO;
 import com.example.photos.service.UserImageActionsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,8 +24,8 @@ import static com.example.photos.enums.StatusCodeEnum.FAIL;
 @Slf4j
 public class UserImageActionsServiceImpl extends ServiceImpl<UserImageActionsMapper,UserImageActions> implements UserImageActionsService {
 
-    @Resource
-    UserImageActionAssembler userImageActionAssembler;
+    @Autowired
+    private UserImageActionAssembler userImageActionAssembler;
 
     @Override
     public Boolean insertActions(UserActionVO userActionVO) {

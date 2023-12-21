@@ -29,10 +29,11 @@ public class UserProfilesServiceImpl extends ServiceImpl<UserProfilesMapper, Use
         Integer userId = UserUtil.getUserDetailsDTO().getUserId();
 
         if(userId==null){
-            //Todo 游客推荐图片
+            //Todo 游客推荐图片,去掉30分钟内浏览的图片，然后从热门图片里随机取10张图片？
 
         }else{
-            //Todo 指定用户根据偏好推荐图片 先获取与权重标签id相同的图片和标签并且去掉用户最近浏览的图片，然后随机排序。
+            //Todo 指定用户根据偏好推荐图片 先获取与权重标签id相同的图片和标签并且去掉
+            // 用户最近浏览的图片(这个可以放到redis中？即只放30分钟内浏览的图片)，然后随机排序。
             List<PictureInfoDTO> res =  this.getPictures();
             return isNull(res)?null:res;
 

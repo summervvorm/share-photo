@@ -11,4 +11,7 @@ public interface UserImageActionsService {
 
     Boolean insertActions(UserActionVO userActionVO);
 
+
+
+
 }
