@@ -1,6 +1,7 @@
 package com.example.photos.service;
 
 import com.example.photos.entity.Comment;
+import com.example.photos.model.dto.CommentDTO;
 
 import java.util.List;
 
@@ -11,8 +12,8 @@ import java.util.List;
  */
 public interface CommentService {
 
-    List<Comment> getCommentsByPicId(Integer picId);
+    List<CommentDTO> getCommentDTOByPicId(Integer picId);
 
-    int insertComment(Comment comment);
+    Boolean insertComment(Comment comment);
 
 }

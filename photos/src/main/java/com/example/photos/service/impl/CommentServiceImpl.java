@@ -1,10 +1,12 @@
 package com.example.photos.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.photos.entity.Comment;
 import com.example.photos.enums.StatusCodeEnum;
 import com.example.photos.exception.CommonJsonException;
 import com.example.photos.mapper.CommentMapper;
+import com.example.photos.model.dto.CommentDTO;
 import com.example.photos.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +23,11 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class CommentServiceImpl implements CommentService {
-    @Autowired
-    CommentMapper commentMapper;
+public class CommentServiceImpl extends ServiceImpl<CommentMapper,Comment> implements CommentService {
 
     @Override
-    public List<Comment> getCommentsByPicId(Integer picId) {
-        List<Comment> comments=commentMapper.selectList(new LambdaQueryWrapper<Comment>()
-                .eq(Comment::getPicId,picId).orderByDesc(Comment::getCreateTime)
-        );
+    public List<CommentDTO> getCommentDTOByPicId(Integer picId) {
+        List<CommentDTO> comments=this.baseMapper.getCommentDTOByPicId(picId);
         if(comments==null){
             comments=new ArrayList<>();
         }
@@ -37,12 +35,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public int insertComment(Comment comment) {
-        comment.setCreateTime(LocalDateTime.now());
-        int ans = commentMapper.insert(comment);
-        if(ans==0){
+    public Boolean insertComment(Comment comment) {
+        boolean ans = this.save(comment);
+        if(!ans){
             throw new CommonJsonException(StatusCodeEnum.FAIL);
         }
-        return ans;
+        return true;
     }
 }

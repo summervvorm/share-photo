@@ -26,7 +26,7 @@ public class CommentController {
     @ApiOperation("根据图片Id查询评论列表")
     @GetMapping("/comments/{picId}")
     public ResultVO<?> getCommentsByPicId(@Valid @PathVariable Integer picId){
-        return ResultVO.ok(commentService.getCommentsByPicId(picId));
+        return ResultVO.ok(commentService.getCommentDTOByPicId(picId));
     }
 
     @ApiOperation("添加评论")

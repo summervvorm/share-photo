@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("upload")
-public class Upload {
-    @TableId(value = "upl_id",type = IdType.AUTO)
-    private int uplId;
-    private String uplUserId;
-    private String uplPicId;
+@TableName("t_download")
+public class Download {
+    @TableId(value = "id",type = IdType.AUTO)
+    private Integer id;
+    private Integer userId;
+    private Integer picId;
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime uplCreatTime;
+    private LocalDateTime creatTime;
 }
