@@ -1,6 +1,8 @@
 package com.example.photos.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.photos.entity.Favorites;
 import com.example.photos.entity.FavoritesList;
@@ -12,6 +14,7 @@ import com.example.photos.mapper.PictureMapper;
 import com.example.photos.model.dto.FavoritesDTO;
 import com.example.photos.model.dto.PageResultDTO;
 import com.example.photos.model.dto.PictureDTO;
+import com.example.photos.model.event.UserActionEvent;
 import com.example.photos.model.vo.ConditionVO;
 import com.example.photos.model.vo.FavoriteVO;
 import com.example.photos.model.vo.FavoritesListVO;
@@ -25,10 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Auther: Arrow
@@ -44,6 +49,9 @@ public class FavoritesServiceImpl implements FavoritesService {
 
     @Resource
     PictureMapper pictureMapper;
+
+    @Resource
+    ApplicationEventPublisher eventPublisher;
 
     @Resource
     FavoritesListMapper favoritesListMapper;
@@ -74,6 +82,12 @@ public class FavoritesServiceImpl implements FavoritesService {
         if (favorites1 == null)
             pictureMapper.updatePicFav(favorites.get(0).getFavPicId(), 1);
         log.info(favorites.toString());
+        UserActionEvent userActionEvent = new UserActionEvent();
+
+        userActionEvent.setPicId(favorites.stream().map(Favorites::getFavPicId).collect(Collectors.toList()));
+        userActionEvent.setUserId(favorites.get(0).getFavUserId());
+        userActionEvent.setActionType(3);
+        eventPublisher.publishEvent(userActionEvent);
         favoritesMapper.insertFavList(favorites);
     }
 
@@ -127,7 +141,11 @@ public class FavoritesServiceImpl implements FavoritesService {
             }
 
         }
-
+        UserActionEvent userActionEvent = new UserActionEvent();
+        userActionEvent.setPicId(favorites.stream().map(Favorites::getFavPicId).collect(Collectors.toList()));
+        userActionEvent.setUserId(favorites.get(0).getFavUserId());
+        userActionEvent.setActionType(4);
+        eventPublisher.publishEvent(userActionEvent);
     }
 
 
@@ -164,6 +182,15 @@ public class FavoritesServiceImpl implements FavoritesService {
 //        更新收藏数
         pictureMapper.updatePicFavByDelFavList(UserUtil.getUserDetailsDTO().getUserId(), favListId);
 //删除收藏数据
+
+        UserActionEvent userActionEvent = new UserActionEvent();
+        userActionEvent.setUserId(UserUtil.getUserDetailsDTO().getUserId());
+        userActionEvent.setActionType(4);
+        userActionEvent.setPicId(favoritesMapper.selectList(Wrappers.<Favorites>lambdaQuery().
+                eq(Favorites::getFavListId,favListId)).stream().map(Favorites::getFavPicId).
+                collect(Collectors.toList()));
+        eventPublisher.publishEvent(userActionEvent);
+
         favoritesMapper.delete(new LambdaQueryWrapper<Favorites>()
                 .eq(Favorites::getFavListId,favListId)
         );

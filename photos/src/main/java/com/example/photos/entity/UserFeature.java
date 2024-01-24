@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,25 +16,21 @@ import java.time.LocalDateTime;
 
 /**
  * @Auther: raolongxiang
- * @Date: 2023/12/6
+ * @Date: 2024/1/24
  * @Description: com.example.photos.entity
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("t_user_image_actions")
-@ApiModel("用户对图片的行为")
-public class UserImageActions {
-
+@TableName("t_user_feature")
+public class UserFeature {
 
     private Long id;
     private Integer userId;
-    private Integer picId;
-
-    @ApiModelProperty("0:点击.1:喜欢，2:收藏,3:下载,4:取消收藏,5:上传")
-    private Integer actionType;
-    private Integer status;
+    private String tagName;
+    private Integer tagId;
+    private Double featureValue;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)		// 反序列化

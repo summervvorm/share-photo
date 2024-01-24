@@ -10,7 +10,7 @@ public interface RedisConstant {
     long PICTURE_EXPIRE_TIME = 60*60*24;
 
     long DOWNLOAD_EXPIRE_TIME=60*60*24;
-
+    long POP_RECOMMEND_EXPIRE_TIME = 60;
     String USER_CODE_KEY = "code:";
 
     String BLOG_VIEWS_COUNT = "blog_views_count";
@@ -36,5 +36,10 @@ public interface RedisConstant {
     String HOT_PICTURE="hot_picture";
 
     String NEW_PICTURE="new_picture";
+
+    String ROOM_CODE = "room_code:";
+
+    String POP_PIC="popPic";
+
 
 }

@@ -63,6 +63,6 @@ public interface PictureService {
 
     void refuseAuditPic(List<PictureInfoDTO>pictureInfoDTOList);
 
-
+    List<PictureInfoDTO>getRecommendPic(Integer userId);
 
 }

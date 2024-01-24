@@ -47,6 +47,13 @@ public class PictureController {
         return ResultVO.ok(pictureService.getPicPageByCondition(conditionVO));
     }
 
+    @ApiOperation("个性化推荐图片")
+    @GetMapping("/picture/recommend/{userId}")
+    public ResultVO<?>getRecommendPic(@PathVariable Integer userId){
+
+        return ResultVO.ok(pictureService.getRecommendPic(userId));
+    }
+
     @ApiOperation("上传图片")
     @PostMapping("/picture/upload")
     public ResultVO<?> uploadPic(PictureUploadVO pictureUploadVO) {

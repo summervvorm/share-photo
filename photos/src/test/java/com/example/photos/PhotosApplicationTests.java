@@ -1,37 +1,30 @@
 package com.example.photos;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.example.photos.entity.Picture;
-import com.example.photos.entity.User;
-import com.example.photos.mapper.*;
-import com.example.photos.model.dto.UserDetailsDTO;
+import com.example.photos.mapper.FollowMapper;
+import com.example.photos.mapper.PictureMapper;
+import com.example.photos.mapper.TagMapper;
 import com.example.photos.service.IndexPicRankService;
-import com.example.photos.service.PictureService;
 import com.example.photos.service.RedisService;
 import com.example.photos.service.UserService;
 import com.example.photos.strategy.contenxt.UploadStrategyContext;
 import com.example.photos.util.PictureUtil;
 import com.example.photos.util.StringTools;
-import com.example.photos.util.WebSocketUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import javax.annotation.Resource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.photos.constant.RedisConstant.*;
+import static com.example.photos.constant.RedisConstant.DOWNLOAD_USER;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

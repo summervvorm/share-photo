@@ -3,7 +3,6 @@ package com.example.photos.controller;
 import com.example.photos.entity.Favorites;
 import com.example.photos.entity.FavoritesList;
 import com.example.photos.model.vo.ConditionVO;
-import com.example.photos.model.vo.FavoriteVO;
 import com.example.photos.model.vo.FavoritesListVO;
 import com.example.photos.model.vo.ResultVO;
 import com.example.photos.service.FavoritesService;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**

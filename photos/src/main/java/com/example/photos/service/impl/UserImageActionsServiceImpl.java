@@ -5,15 +5,19 @@ import com.example.photos.assembler.UserImageActionAssembler;
 import com.example.photos.entity.UserImageActions;
 import com.example.photos.exception.CommonJsonException;
 import com.example.photos.mapper.UserImageActionsMapper;
+import com.example.photos.model.event.UserActionEvent;
 import com.example.photos.model.vo.UserActionVO;
 import com.example.photos.service.UserImageActionsService;
 import com.example.photos.strategy.UserActionStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.example.photos.enums.ActionTypeEnum.getStrategy;
 import static com.example.photos.enums.StatusCodeEnum.FAIL;
@@ -54,6 +58,8 @@ public class UserImageActionsServiceImpl extends ServiceImpl<UserImageActionsMap
             return false;
         }
 
+
+
         /**
         *@Description:根据不同行为实现不同策略。
         */
@@ -66,4 +72,19 @@ public class UserImageActionsServiceImpl extends ServiceImpl<UserImageActionsMap
 
         return true;
     }
+
+    @EventListener
+    public void onUserActionEvent(UserActionEvent userActionEvent){
+        if(userActionEvent==null){
+            throw new CommonJsonException(FAIL);
+        }
+        List<UserImageActions>actions = userActionEvent.getPicId().stream().map(picId ->UserImageActions.builder()
+                .userId(userActionEvent.getUserId()).actionType(userActionEvent.getActionType()).picId(picId).build()
+        ).collect(Collectors.toList());
+
+        this.saveBatch(actions);
+
+    }
+
+
 }

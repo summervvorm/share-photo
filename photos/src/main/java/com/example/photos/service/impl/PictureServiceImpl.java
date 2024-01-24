@@ -11,6 +11,7 @@ import com.example.photos.enums.StatusCodeEnum;
 import com.example.photos.exception.CommonJsonException;
 import com.example.photos.mapper.*;
 import com.example.photos.model.dto.*;
+import com.example.photos.model.event.UserActionEvent;
 import com.example.photos.model.vo.ConditionVO;
 import com.example.photos.model.vo.NotificationVO;
 import com.example.photos.model.vo.PictureUploadVO;
@@ -19,10 +20,13 @@ import com.example.photos.service.IndexPicRankService;
 import com.example.photos.service.PictureService;
 import com.example.photos.service.PictureTagService;
 import com.example.photos.service.RedisService;
+import com.example.photos.strategy.contenxt.RecommendStrategyContext;
 import com.example.photos.strategy.contenxt.UploadStrategyContext;
 import com.example.photos.util.*;
 import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Resource;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,12 +82,17 @@ public class PictureServiceImpl implements PictureService {
     @Resource
     private RedisService redisService;
 
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Resource
     private PictureTagMapper pictureTagMapper;
 
     @Resource
     private TagMapper tagMapper;
+
+    @Resource
+    private RecommendStrategyContext strategyContext;
 
     @Resource
     private CommentMapper commentMapper;
@@ -159,6 +168,14 @@ public class PictureServiceImpl implements PictureService {
         pictureTagService.addPicTag(pictureUploadVO, picId);
 
         userMapper.addExperience(UserUtil.getUserDetailsDTO().getUserId());
+
+        UserActionEvent userActionEvent = new UserActionEvent();
+        userActionEvent.setPicId(new ArrayList<>());
+        userActionEvent.getPicId().add(picId);
+        userActionEvent.setUserId(UserUtil.getUserDetailsDTO().getUserId());
+        userActionEvent.setActionType(6);
+        applicationEventPublisher.publishEvent(userActionEvent);
+
         return header;
     }
 
@@ -238,6 +255,12 @@ public class PictureServiceImpl implements PictureService {
         }else{
             pictureMapper.updatePicLikes(picId,1);
         }
+        UserActionEvent userActionEvent = new UserActionEvent();
+        userActionEvent.setPicId(new ArrayList<>(picId));
+        userActionEvent.setUserId(userId);
+        userActionEvent.setActionType(1);
+        applicationEventPublisher.publishEvent(userActionEvent);
+
         return res;
     }
 
@@ -252,6 +275,12 @@ public class PictureServiceImpl implements PictureService {
 
         }else
             pictureMapper.updatePicLikes(picId,-1);
+
+        UserActionEvent userActionEvent = new UserActionEvent();
+        userActionEvent.setPicId(new ArrayList<>(picId));
+        userActionEvent.setUserId(userId);
+        userActionEvent.setActionType(2);
+        applicationEventPublisher.publishEvent(userActionEvent);
         return res;
     }
 
@@ -477,6 +506,14 @@ public class PictureServiceImpl implements PictureService {
         }
         notificationMapper.insertList(notifications);
 
+    }
+
+    @Override
+    public List<PictureInfoDTO> getRecommendPic(Integer userId) {
+
+
+
+        return strategyContext.executeRecommendStrategy(userId);
     }
 
 
