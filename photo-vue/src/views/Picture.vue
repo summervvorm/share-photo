@@ -626,7 +626,7 @@ export default {
 
         this.$refs.link.click();
         const vm = this
-        api.post("/api/picture/download/"+1).then(function (res){
+        api.post("/api/picture/download/"+1+"&"+this.image.imageId).then(function (res){
           vm.$store.state.downloadCount=res.data.data
           console.log(res)
           const count="今日还可下载:"+(vm.$store.state.downloadAbles-vm.$store.state.downloadCount)

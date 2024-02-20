@@ -18,4 +18,9 @@ public interface RabbitMQConstant {
     String SUBSCRIBE_QUEUE = "subscribe_queue";
 
     String SUBSCRIBE_EXCHANGE = "subscribe_exchange";
+
+    String REFRESH_USER_FEATURE_QUEUE = "refresh_user_feature_queue";
+
+    String REFRESH_USER_FEATURE_EXCHANGE = "refresh_user_feature_exchange";
+
 }

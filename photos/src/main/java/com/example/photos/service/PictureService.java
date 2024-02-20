@@ -50,7 +50,7 @@ public interface PictureService {
 
     public void  addReportPic(ReportPicVO reportPicVO);
 
-    public int downloadPic(int i);
+    public int downloadPic(int i,Long picId);
 
     void updatePictureInfo(PictureInfoDTO pictureInfoDTO);
 

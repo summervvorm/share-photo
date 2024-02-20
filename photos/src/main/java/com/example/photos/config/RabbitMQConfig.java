@@ -1,9 +1,6 @@
 package com.example.photos.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -59,6 +56,20 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingSubscribeDirect() {
         return BindingBuilder.bind(subscribeQueue()).to(subscribeExchange());
+    }
+
+    @Bean
+    public Queue refreshUserFeatureQueue(){
+        return new Queue(REFRESH_USER_FEATURE_QUEUE,true);
+    }
+
+    @Bean
+    public DirectExchange refreshUserFeatureExchange(){
+        return new DirectExchange(REFRESH_USER_FEATURE_EXCHANGE,true,true);
+    }
+    @Bean
+    public Binding bindingRefreshUserFeatureDirect(){
+        return BindingBuilder.bind(refreshUserFeatureQueue()).to(refreshUserFeatureExchange()).with("#");
     }
 
 }

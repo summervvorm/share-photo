@@ -3,6 +3,7 @@ package com.example.photos.model.event;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,8 @@ import java.util.List;
  * @Description: com.example.photos.model.event
  */
 @Data
-public class UserActionEvent {
+public class UserActionEvent implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Integer userId;
     private List<Integer> picId;

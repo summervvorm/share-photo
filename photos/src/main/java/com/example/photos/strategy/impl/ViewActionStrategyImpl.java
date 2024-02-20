@@ -1,5 +1,6 @@
 package com.example.photos.strategy.impl;
 
+import com.example.photos.model.event.UserActionEvent;
 import com.example.photos.model.vo.UserActionVO;
 import com.example.photos.strategy.UserActionStrategy;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ViewActionStrategyImpl implements UserActionStrategy {
     @Override
-    public void execute(UserActionVO userActionVO) {
+    public void execute(UserActionEvent userActionEvent) {
 
-        log.info("调用了viewActionStrategyImpl,数据为:{}",userActionVO);
+        log.info("调用了viewActionStrategyImpl,数据为:{}",userActionEvent);
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.photos.strategy;
 
+import com.example.photos.model.event.UserActionEvent;
 import com.example.photos.model.vo.UserActionVO;
 
 /**
@@ -9,6 +10,6 @@ import com.example.photos.model.vo.UserActionVO;
  */
 public interface UserActionStrategy {
 
-    void execute(UserActionVO userActionVO);
+    void execute(UserActionEvent userActionEvent);
 
 }

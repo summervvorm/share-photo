@@ -34,7 +34,7 @@ public class UserImageActions {
     private Integer userId;
     private Integer picId;
 
-    @ApiModelProperty("0:点击.1:喜欢，2:收藏,3:下载,4:取消收藏,5:上传")
+    @ApiModelProperty("0:点击.1:喜欢，2:取消喜欢，3:收藏,4:取消收藏,6:上传，7:下载")
     private Integer actionType;
     private Integer status;
 

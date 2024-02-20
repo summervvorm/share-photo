@@ -140,9 +140,9 @@ public class PictureController {
     }
 
     @ApiOperation("下载图片")
-    @PostMapping("/picture/download/{i}")
-    public ResultVO<?> download(@PathVariable int i) {
-        return ResultVO.ok(pictureService.downloadPic(i));
+    @PostMapping("/picture/download/{i}&{picId}")
+    public ResultVO<?> download(@PathVariable int i, @PathVariable Long picId) {
+        return ResultVO.ok(pictureService.downloadPic(i,picId));
     }
 
 

@@ -25,6 +25,6 @@ public class UserActionVO {
     private int picId;
 
     @NotNull(message = "行为类型不能为空")
-    @ApiModelProperty("0:点击.1:喜欢，2:收藏,3:下载,4:取消收藏,5:上传")
+    @ApiModelProperty("0:点击.1:喜欢，2:取消喜欢，3:收藏,4:取消收藏,6:上传，7:下载")
     private int actionType;
 }

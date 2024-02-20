@@ -37,7 +37,7 @@ public class LevelController {
     @GetMapping("/levels")
     public ResultVO<?> getAllLevel() {
         Map<String, Object> map = new HashMap<>();
-        int count = pictureService.downloadPic(0);
+        int count = pictureService.downloadPic(0, -1L);
         map.put("count", count);
         map.put("level", levelService.getAllLevelResource());
         return ResultVO.ok(map);
