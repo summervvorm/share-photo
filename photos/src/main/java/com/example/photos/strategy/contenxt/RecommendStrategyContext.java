@@ -8,8 +8,10 @@ import com.example.photos.strategy.RecommendStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.example.photos.enums.RecommendModeEnum.getStrategy;
 
@@ -37,8 +39,12 @@ public class RecommendStrategyContext {
         }else{
             mode ="contentBase";
         }
+        Set<Integer>set = new HashSet<>();
+        List<PictureInfoDTO>pictureInfoDTOS = recommendStrategyMap.get(getStrategy(mode)).getRecommendPic(userId);
 
-        return recommendStrategyMap.get(getStrategy(mode)).getRecommendPic(userId);
+        recommendStrategyMap.get(getStrategy(mode)).filterRecommendPic(pictureInfoDTOS,userId);
+
+        return pictureInfoDTOS;
     }
 
 }

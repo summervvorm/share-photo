@@ -21,3 +21,4 @@ yarn-error.log*
 target
 target/
 photos/src/test
+/photos/src/main/resources/redisson.yml

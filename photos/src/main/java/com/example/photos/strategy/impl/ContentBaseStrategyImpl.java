@@ -7,15 +7,20 @@ import com.example.photos.mapper.UserImageActionsMapper;
 import com.example.photos.model.dto.PictureInfoDTO;
 import com.example.photos.service.RedisService;
 import com.example.photos.strategy.RecommendStrategy;
+import com.example.photos.util.BloomFilterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import org.redisson.api.RBloomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.example.photos.constant.CommendConstant.COMMENDED_PIC_LIST;
 
 /**
  * @Auther: raolongxiang
@@ -33,9 +38,24 @@ public class ContentBaseStrategyImpl implements RecommendStrategy {
     @Autowired
     UserImageActionsMapper userImageActionsMapper;
 
+    @Autowired
+    BloomFilterUtil bloomFilterUtil;
+
+    @PostConstruct
+    void init() {
+
+        long expectedInsertions = 10000L;
+        // 错误比率
+        double falseProbability = 0.01;
+
+        bloomFilterUtil.create(COMMENDED_PIC_LIST, expectedInsertions, falseProbability);
+
+    }
+
+
     @Override
     public List<PictureInfoDTO> getRecommendPic(Integer userId) {
-        /* todo 基于内容个性化推荐，需不需要放缓存呢？已经推荐过的图片怎么避免重复推荐呢？(使用redis储存id列表然后去重？)
+        /* todo 基于内容个性化推荐，需不需要放缓存呢？已经推荐过的图片怎么避免重复推荐呢？(使用redis储存id列表然后去重？)pass->使用布隆过滤器去实现
          *  用户画像也放到redis中,每次登陆就更新,然后在用户有重要行为操作时（如喜欢、收藏、下载等）
          *  立即更新用户画像，而对于较小的行为（如浏览、点击等），采用延迟更新。
          *  对于图片向量的话不需要去更新，直接计算即可。
@@ -45,21 +65,29 @@ public class ContentBaseStrategyImpl implements RecommendStrategy {
         Map<String, Double> userFeature = getUserFeature(userId);
         List<Integer> picIds = new ArrayList<>(picFeature.keySet());
 
+        if (picFeature.keySet() == null || picIds.size() == 0) {
+            return null;
+        }
+        RBloomFilter<String> bloomFilter = bloomFilterUtil.get(COMMENDED_PIC_LIST);
+
+        picIds = picIds.stream().filter(list -> !bloomFilter.contains(list + ":" + userId)).collect(Collectors.toList());
+
+
         List<Integer> userIds = userImageActionsMapper.selectList(Wrappers.<UserImageActions>lambdaQuery().
                 eq(UserImageActions::getUserId, userId).ge(UserImageActions::getCreateTime, LocalDateTime.now()
                         .minusMonths(1))).stream().map(UserImageActions::getPicId).collect(Collectors.toList());
-        //去除以操作过的图片集 todo 记录几分钟内对用户推荐过的图片，然后去除这个图片集
-        List<Integer> recommendedPicIds = (List<Integer>) redisService.get("recommendPicIds:" + userId);
-        if (recommendedPicIds != null)
-            picIds.removeAll(recommendedPicIds);
         picIds.removeAll(userIds);
 
-        Collections.sort(picIds, (id1, id2) ->
+        picIds.sort((id1, id2) ->
                 Double.compare(getSimilarity(picFeature.get(id2), userFeature),
-                        getSimilarity(picFeature.get(id1), userFeature))
-        );
-        if(picIds.size()>30)
-        picIds.removeAll(picIds.subList(30, picIds.size()));
+                        getSimilarity(picFeature.get(id1), userFeature)));
+        if (picIds.size() > 30) {
+            picIds.removeAll(picIds.subList(30, picIds.size()));
+        }
+
+        if (picIds.size() == 0) {
+            return null;
+        }
 
         List<Map<String, Object>> list = userImageActionsMapper.getPicInfoByList(picIds);
         Map<Integer, PictureInfoDTO> res = new HashMap<>();
@@ -85,14 +113,25 @@ public class ContentBaseStrategyImpl implements RecommendStrategy {
             res.put((Integer) map.get("pic_id"), pictureInfoDTO);
         });
 
-        List<PictureInfoDTO> pictureInfoDTOS = new ArrayList<>(res.values());
+        return new ArrayList<>(res.values());
+    }
 
-        List<Integer> recommendPicId = pictureInfoDTOS.stream().map(PictureInfoDTO::getPicId).collect(Collectors.toList());
-        if (recommendedPicIds != null)
-            recommendPicId.addAll(recommendPicId);
-        redisService.set("recommendPicIds:" + userId, recommendPicId, 60 * 3);
+    @Override
+    public void filterRecommendPic(List<PictureInfoDTO> pictureInfoDTOS, Integer userId) {
 
-        return pictureInfoDTOS;
+        long expectedInsertions = 10000L;
+        // 错误比率
+        double falseProbability = 0.01;
+
+        RBloomFilter<String> bloomFilter = bloomFilterUtil.create(COMMENDED_PIC_LIST, expectedInsertions, falseProbability);
+        if (pictureInfoDTOS != null) {
+            for (PictureInfoDTO pictureInfoDTO : pictureInfoDTOS) {
+
+                bloomFilter.add(pictureInfoDTO.getPicId() + ":" + userId);
+
+            }
+        }
+
     }
 
     private Map<String, Double> getUserFeature(Integer userId) {
@@ -102,7 +141,7 @@ public class ContentBaseStrategyImpl implements RecommendStrategy {
     }
 
 
-    public Map<Integer, Map<String, Double>> getPicFeature(Integer userId) {
+    private Map<Integer, Map<String, Double>> getPicFeature(Integer userId) {
         Map<String, Double> userFeature = getUserFeature(userId);
 
         if (userFeature == null) {

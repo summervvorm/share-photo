@@ -5,6 +5,8 @@ import com.example.photos.mapper.UserImageActionsMapper;
 import com.example.photos.model.dto.PictureInfoDTO;
 import com.example.photos.service.RedisService;
 import com.example.photos.strategy.RecommendStrategy;
+import com.example.photos.util.BloomFilterUtil;
+import org.redisson.api.RBloomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.example.photos.constant.CommendConstant.COMMENDED_PIC_LIST;
 
 /**
  * @Auther: raolongxiang
@@ -26,6 +30,9 @@ public class PopRecommendStrategyImpl implements RecommendStrategy {
     RedisService redisService;
     @Autowired
     UserImageActionsMapper actionsMapper;
+
+    @Autowired
+    BloomFilterUtil bloomFilterUtil;
 
 
     @Override
@@ -65,5 +72,24 @@ public class PopRecommendStrategyImpl implements RecommendStrategy {
 
 
         return pictureInfoDTOS;
+    }
+
+    @Override
+    public void filterRecommendPic(List<PictureInfoDTO> pictureInfoDTOS,Integer userId) {
+
+        long expectedInsertions = 10000L;
+        // 错误比率
+        double falseProbability = 0.01;
+
+        RBloomFilter<String> bloomFilter = bloomFilterUtil.create(COMMENDED_PIC_LIST, expectedInsertions, falseProbability);
+        if (pictureInfoDTOS != null) {
+            for (PictureInfoDTO pictureInfoDTO : pictureInfoDTOS) {
+
+                bloomFilter.add(pictureInfoDTO.getPicId() + ":" + userId);
+
+            }
+        }
+
+
     }
 }

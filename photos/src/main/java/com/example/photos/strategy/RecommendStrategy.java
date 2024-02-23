@@ -14,5 +14,6 @@ public interface RecommendStrategy {
 
     List<PictureInfoDTO> getRecommendPic(Integer userId);
 
+    void filterRecommendPic(List<PictureInfoDTO>pictureInfoDTOS,Integer userId);
 
 }

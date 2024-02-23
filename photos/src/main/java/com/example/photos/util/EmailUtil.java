@@ -1,6 +1,5 @@
 package com.example.photos.util;
 
-import com.example.photos.exception.CommonJsonException;
 import com.example.photos.model.dto.EmailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
