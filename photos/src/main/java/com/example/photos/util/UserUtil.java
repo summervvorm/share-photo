@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import static com.example.photos.enums.StatusCodeEnum.NO_LOGIN;
+
 /**
  * @Auther: Arrow
  * @Date: 2023/5/7
@@ -18,9 +20,10 @@ public class UserUtil {
     public static UserDetailsDTO getUserDetailsDTO() {
 //        log.info("这是UserDetail: "+);
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")){
-//            throw new CommonJsonException("用户未登录");
             log.info("返回的是一个空UserDetailDTO");
-            return new UserDetailsDTO();
+
+            throw new CommonJsonException(NO_LOGIN);
+//            return new UserDetailsDTO();
         }
 
         return (UserDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -11,12 +11,15 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
 		"/api":{
-		        target: 'http://localhost:8082/',      //后端接口的根目录
+		        // target: 'http://116.62.108.160:8082/',      //后端接口的根目录
+            target: 'http://localhost:8082/',      //后端接口的根目录
+
 		        changeOrigin: true,                    //是否跨域
-		        pathRewrite: { //重写路径 替换请求地址中的指定路径
-		                  ['^/api']: '/' //将请求地址中的api替换为空
-				}
-	}
+            pathRewrite: {
+              ['^/api']: '/'
+      }
+
+    }
 	},
 
     // Various Dev Server settings

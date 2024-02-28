@@ -259,6 +259,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthorInfoDTO getAuthorInfoById(int userId) {
         User user = userMapper.selectById(userId);
+        if(user == null){
+            throw new CommonJsonException(USERNAME_NOT_EXIST);
+        }
         Map<String, BigDecimal> map = pictureService.countLikesAndFavoritesByUserId(userId);
         int likes = map.get("likes_count").intValue();
         int fav = map.get("favorites_count").intValue();

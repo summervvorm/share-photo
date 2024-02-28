@@ -30,8 +30,8 @@ public class UploadStrategyContext {
 
     /**
      *
-     * @param file
-     * @param path
+     * @param: file
+     * @param: path
      * @return 上传文件
      */
     public String executeUploadStrategy(MultipartFile file, String path) {
@@ -56,7 +56,6 @@ public class UploadStrategyContext {
             log.info(fileName);
         }
         uploadStrategyMap.get(getStrategy(uploadMode)).deleteFiles(fileName);
-        return;
     }
 
 

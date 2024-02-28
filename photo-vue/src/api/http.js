@@ -1,4 +1,5 @@
 import axios from 'axios'; // 引入axios
+import {ele_error, ele_success, ele_warning} from "../notify/element-notify";
 import QS from 'qs'; // 引入qs模块，用来序列化post类型的数据，后面会提到
 // vant的toast提示框组件，大家可根据自己的ui组件更改。
 import router from '@/router'
@@ -22,8 +23,6 @@ instance.interceptors.request.use((config) => {
     //     // fullscreen:false,
     //     background: 'rgba(232,232,232,0.7)'
     // }
-
-
     // );
 
   // loadingInstance.close();
@@ -41,9 +40,14 @@ instance.interceptors.response.use((res) => {
     //返回响应数据
 	// console.log(JSON.stringify(res))
 	if(res.data.code===51000||res.data.code===52000){
-		// res.data.message="用户名或密码错误"
-		return Promise.reject(res)
-	}
+    // res.data.message="用户名或密码错误"
+    ele_error(res.data.message);
+    return Promise.reject(res)
+	}else if(res.data.code===52002){
+    ele_error(res.data.message);
+  }
+
+
     return res
 }, err => {
     // 响应失败则关闭loading加载

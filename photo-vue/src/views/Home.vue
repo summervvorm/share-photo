@@ -32,8 +32,8 @@
             </div>
             <div class="option">
               <el-radio-group v-model="radio1">
-                <el-radio-button  label="最新"></el-radio-button>
-                <el-radio-button  label="最热"></el-radio-button>
+                <el-radio-button label="最新"></el-radio-button>
+                <el-radio-button label="最热"></el-radio-button>
               </el-radio-group>
             </div>
           </div>
@@ -58,9 +58,9 @@
           </div>
           <div class="contentButtom">
             <div>
-            <a href="">
-              <span>发现更多</span>
-            </a>
+              <a href="">
+                <span>发现更多</span>
+              </a>
             </div>
           </div>
 
@@ -69,7 +69,7 @@
       </el-container>
       <el-footer>
         <div class="footer">
-<!--          我是页脚-->
+          <!--          我是页脚-->
         </div>
 
       </el-footer>
@@ -151,10 +151,10 @@ export default {
     }
   },
   methods: {
-    clickHotPic(){
+    clickHotPic() {
 
     },
-    clickNewPic(){
+    clickNewPic() {
 
     },
     //接收ImageBox的图片信息，处理收藏操作
@@ -208,29 +208,29 @@ export default {
 
     },
     creatNewFav() {
-      if(this.newFavName.length>=1){
-      this.isShowNew = !this.isShowNew
-      const item = {
-        favCollectName: this.newFavName
-      }
+      if (this.newFavName.length >= 1) {
+        this.isShowNew = !this.isShowNew
+        const item = {
+          favCollectName: this.newFavName
+        }
 
 
-      const data ={}
-      data.userId=this.$store.state.currentUser.userId
-      data.favName=this.newFavName
-      data.favType=0
-      console.log(data)
-      const vm = this
-      api.post("/api/favorites/favoritesList",data).then(function (res){
+        const data = {}
+        data.userId = this.$store.state.currentUser.userId
+        data.favName = this.newFavName
+        data.favType = 0
+        console.log(data)
+        const vm = this
+        api.post("/api/favorites/favoritesList", data).then(function (res) {
           console.log(res)
           vm.favLists.push(res.data.data)
-      }).catch(function (err){
+        }).catch(function (err) {
 
-      })
-      }else{
+        })
+      } else {
         Notification({
-          message:"收藏夹名不能为空！",
-          type:"warning"
+          message: "收藏夹名不能为空！",
+          type: "warning"
         })
       }
     },
@@ -266,9 +266,11 @@ export default {
             for (let i = 0; i < 4; i++) {
 
               // x.pictureInfos[i][j]=res.data.data[i*10+j]
-              res.data.data[i * 10 + j].isLike = !!res2.data.data.likePicIdList.includes(res.data.data[i * 10 + j].picId);
+              if (res2.data.data !== undefined) {
+                res.data.data[i * 10 + j].isLike = !!res2.data.data.likePicIdList.includes(res.data.data[i * 10 + j].picId);
 
-              res.data.data[i * 10 + j].isFav = !!res2.data.data.favPicIdList.includes(res.data.data[i * 10 + j].picId);
+                res.data.data[i * 10 + j].isFav = !!res2.data.data.favPicIdList.includes(res.data.data[i * 10 + j].picId);
+              }
               res.data.data[i * 10 + j].indexs = i * 10 + j
               vm.set(x.pictureInfos[i], j, res.data.data[i * 10 + j])
               if (x.tags.size <= 10) {
@@ -299,9 +301,9 @@ export default {
   },
   watch: {
     radio1(newVal, oldVal) {
-      if (newVal == '最新') {
+      if (newVal === '最新') {
         this.getPicInfos('new')
-      }else{
+      } else {
         this.getPicInfos('hot')
       }
 
@@ -324,7 +326,7 @@ export default {
 </script>
 
 <style scoped>
-.footer{
+.footer {
   border-top: 1px solid #d2d2d2;
 }
 
@@ -342,17 +344,24 @@ export default {
   margin-bottom: 50px;
 }
 
-.contentButtom a{
+.contentButtom a {
   text-decoration: none;
   color: inherit;
 }
-.contentButtom div{
-  padding: 10px 26px;border-radius: 18px;cursor: pointer;margin-bottom: 10px;background: #ffffff;
+
+.contentButtom div {
+  padding: 10px 26px;
+  border-radius: 18px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  background: #ffffff;
   border: 1px solid #b0b0b0;
 }
-.contentButtom div:hover{
+
+.contentButtom div:hover {
   background: #efefef;
 }
+
 .contentButtom {
   position: absolute;
   z-index: 5;
@@ -400,14 +409,9 @@ export default {
   height: 30px;
   line-height: 30px;
   padding: 1px 10px;
-  //word-wrap: inherit;
-  //min-width: 30px;
-  margin-right: 20px;
-  border: 1px solid #c5c5c5;
+//word-wrap: inherit; //min-width: 30px; margin-right: 20px; border: 1px solid #c5c5c5;
   border-radius: 8px;
-  //box-sizing: border-box;
-  //display: flex;
-  align-items: center;
+//box-sizing: border-box; //display: flex; align-items: center;
 }
 
 .tag div:hover {
@@ -421,7 +425,7 @@ export default {
 .mainTop {
   display: flex;
   justify-content: space-between;
-  //min-width: 1400px;
+//min-width: 1400px;
 }
 
 .fade {

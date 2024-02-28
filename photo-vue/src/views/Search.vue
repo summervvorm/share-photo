@@ -55,7 +55,7 @@
             :picker-options="pickerOptions"
             size="mini"
             @change="clickDateTime"
-            >
+          >
           </el-date-picker>
           <div class="color-option" slot="reference">选择日期</div>
         </el-popover>
@@ -67,21 +67,26 @@
           width="283"
           trigger="click"
         >
-           <span style="font-weight: 600;margin-left: 2px">大于</span> <br>
-          <input style="margin-top: 10px" placeholder="宽度（像素）" type="number" min="0" class="size-textInput" tabindex="1" v-model="picWidth">
+          <span style="font-weight: 600;margin-left: 2px">大于</span> <br>
+          <input style="margin-top: 10px" placeholder="宽度（像素）" type="number" min="0" class="size-textInput"
+                 tabindex="1" v-model="picWidth">
           ✖
           <input placeholder="高度（像素）" type="number" min="0" class="size-textInput" tabindex="1" v-model="picHeight">
 
           <div style="display: flex;justify-content: space-between;margin-top: 20px">
             <div>
-              <el-button type="danger" icon="el-icon-delete" size="small" @click="picWidth='',picHeight='',showSizeInput=false,getPicList()">清除</el-button>
+              <el-button type="danger" icon="el-icon-delete" size="small"
+                         @click="picWidth='',picHeight='',showSizeInput=false,getPicList()">清除
+              </el-button>
             </div>
             <div>
               <el-button type="success" size="small" @click="clickSize">应用</el-button>
             </div>
           </div>
 
-          <div class="color-option" :style="showSizeInput?'background: #efefef;color:#000':'color:#656f79;font-weight:600'" slot="reference"><span v-if="!showSizeInput">尺寸</span> <span v-else>> {{picWidth}} x {{picHeight}} px</span></div>
+          <div class="color-option"
+               :style="showSizeInput?'background: #efefef;color:#000':'color:#656f79;font-weight:600'" slot="reference">
+            <span v-if="!showSizeInput">尺寸</span> <span v-else>> {{ picWidth }} x {{ picHeight }} px</span></div>
         </el-popover>
       </div>
 
@@ -89,28 +94,28 @@
 
     <div>
       <div style="display: flex;font-weight: 800;font-size: 22px;padding:20px">
-        共{{count}}张{{keywords}}图片
+        共{{ count }}张{{ keywords }}图片
       </div>
 
       <el-container>
         <el-main class="main">
           <div class="mainTop">
             <div class="tag">
-              <div v-for="(item,index) in tags"  :key="index">
+              <div v-for="(item,index) in tags" :key="index">
                 <router-link style="color: black" :to="{ path: '/Search/'+item,}">{{ item }}</router-link>
               </div>
             </div>
           </div>
           <div style="display: flex">
-          <div v-for="(item,index) in advertisements" :key="index" >
-          <div class="advertising-box" v-if="$store.state.isDisplayAd">
-            <a :href="item.targetUrl" target="_blank">
-            <Advertising :advertisements="item">
+            <div v-for="(item,index) in advertisements" :key="index">
+              <div class="advertising-box" v-if="$store.state.isDisplayAd">
+                <a :href="item.targetUrl" target="_blank">
+                  <Advertising :advertisements="item">
 
-            </Advertising>
-            </a>
-          </div>
-          </div>
+                  </Advertising>
+                </a>
+              </div>
+            </div>
           </div>
           <div class="picContent">
 
@@ -118,7 +123,7 @@
             <div class="contentColumn" v-for="(items,index) in pictureInfos" :key="index">
               <div v-for="(item,index2) in items" :key="item.picId">
                 <transition name="fade-transform" mode="out-in">
-                <ImageBox :itemprop="item" @clickMark="handleClickMark"></ImageBox>
+                  <ImageBox :itemprop="item" @clickMark="handleClickMark"></ImageBox>
                 </transition>
               </div>
             </div>
@@ -190,6 +195,7 @@ import {Notification} from "element-ui";
 import pubsub from "pubsub-js";
 import moment from 'moment'
 import Advertising from "../components/Advertising.vue";
+
 export default {
   name: "Search",
   components: {
@@ -199,9 +205,9 @@ export default {
   },
   data() {
     return {
-      showSizeInput:false,
-      picWidth:'',
-      picHeight:'',
+      showSizeInput: false,
+      picWidth: '',
+      picHeight: '',
 
       colorBox: [{
         background: '#ffffff',
@@ -307,23 +313,23 @@ export default {
         }]
       },
       datetimes: '',
-      advertisements:[],
+      advertisements: [],
     }
   },
   computed: {},
   watch: {
-    '$route.params.search': function(newVal, oldVal) {
+    '$route.params.search': function (newVal, oldVal) {
       // 监听 $route.params.search 的变化，并在发生变化时触发该回调函数
-      this.keywords=newVal
+      this.keywords = newVal
       this.getPicList()
     },
   },
   methods: {
-    clickSize(){
-      this.showSizeInput=true
+    clickSize() {
+      this.showSizeInput = true
       this.getPicList()
     },
-    clickDateTime(){
+    clickDateTime() {
       // const localDateTime=moment(this.datetimes).format('YYYY-MM-DDTHH:mm:ss');
       console.log();
 
@@ -339,7 +345,7 @@ export default {
 
     },
     handleCurrentChange(currentPage) {
-      this.current=currentPage
+      this.current = currentPage
       this.getPicList()
 
     },
@@ -352,7 +358,7 @@ export default {
         this.color = this.colorList[index].name
         this.getPicList()
       } else {
-        this.color=''
+        this.color = ''
         this.getPicList()
       }
     },
@@ -449,26 +455,26 @@ export default {
     },
 
 
-    getAdList(){
+    getAdList() {
 
 
-      api.get("/api/advertisements").then((res)=>{
+      api.get("/api/advertisements").then((res) => {
 
-        this.advertisements=res.data.data
+        this.advertisements = res.data.data
         console.log(res)
-      }).catch((err)=>{
+      }).catch((err) => {
         console.log(err)
       })
 
     },
 
     getPicList() {
-      let sTime=''
-      let eTime=''
+      let sTime = ''
+      let eTime = ''
       console.log(this.datetimes)
-      if(this.datetimes!==''&&this.datetimes!==null){
-         sTime=(new Date(this.datetimes[0]).toISOString())
-         eTime=(new Date(this.datetimes[1]).toISOString())
+      if (this.datetimes !== '' && this.datetimes !== null) {
+        sTime = (new Date(this.datetimes[0]).toISOString())
+        eTime = (new Date(this.datetimes[1]).toISOString())
       }
       const params = {
         current: this.current,
@@ -476,10 +482,10 @@ export default {
         keywords: this.keywords,
         category: '',
         color: this.color,
-        startTime:sTime,
-        endTime:eTime,
-        picWidth:this.picWidth,
-        picHeight:this.picHeight,
+        startTime: sTime,
+        endTime: eTime,
+        picWidth: this.picWidth,
+        picHeight: this.picHeight,
       };
       const vm = this
       const x = Vue
@@ -493,27 +499,34 @@ export default {
           console.log(res)
           api.get("/api/picture/likeAndFav/images").then(function (res2) {
             console.log(res)
-            vm.pictureInfos[0].splice(0,vm.pictureInfos[0].length)
-            vm.pictureInfos[1].splice(0,vm.pictureInfos[1].length)
-            vm.pictureInfos[2].splice(0,vm.pictureInfos[2].length)
-            vm.pictureInfos[3].splice(0,vm.pictureInfos[3].length)
+            vm.pictureInfos[0].splice(0, vm.pictureInfos[0].length)
+            vm.pictureInfos[1].splice(0, vm.pictureInfos[1].length)
+            vm.pictureInfos[2].splice(0, vm.pictureInfos[2].length)
+            vm.pictureInfos[3].splice(0, vm.pictureInfos[3].length)
             vm.tags.clear()
             for (let i1 = 0; i1 < res.data.data.data.length; i1++) {
               let j = Math.floor(i1 / 4);
               let i = i1 % 4;
               // vm.pictureInfos[i].splice(0,vm.pictureInfos[i].length)
               // vm.pictureInfos[i][j] = res.data.data.data[i1];
-              res.data.data.data[i1].isLike = !!res2.data.data.likePicIdList.includes(res.data.data.data[i1].picId);
-              res.data.data.data[i1].isFav = !!res2.data.data.favPicIdList.includes(res.data.data.data[i1].picId);
+              if (res2.data.data!== undefined) {
+                res.data.data.data[i1].isLike = !!(
+                  res2.data.data.likePicIdList &&
+                  res2.data.data.likePicIdList.includes(res.data.data.data[i1].picId)
+                );
+
+              res.data.data.data[i1].isFav = !!(res2.data.data.favPicIdList &&
+                res2.data.data.favPicIdList.includes(res.data.data.data[i1].picId));
+              }
               res.data.data.data[i].indexs = i1
               // x.set(vm.pictureInfos[i], j, res.data.data.data[i1])
               vm.pictureInfos[i].push(res.data.data.data[i1])
 
               if (vm.tags.size <= 10) {
-                if(res.data.data.data[i1].tags!==null)
-                for (let q of res.data.data.data[i1].tags) {
-                  vm.tags.add(q.tagName)
-                }
+                if (res.data.data.data[i1].tags !== null)
+                  for (let q of res.data.data.data[i1].tags) {
+                    vm.tags.add(q.tagName)
+                  }
               }
             }
             console.log(vm.pictureInfos)
@@ -521,7 +534,7 @@ export default {
 
             // console.log(res.data)
           }).catch(function (err) {
-            console.log(err)
+            console.log(err, vm.pictureInfos)
           })
         }).catch(function (err) {
         console.log(err)
@@ -544,10 +557,11 @@ export default {
 </script>
 
 <style scoped>
-.size-textInput:focus-visible{
+.size-textInput:focus-visible {
   border: 1px solid #4caf50;
 }
-.size-textInput{
+
+.size-textInput {
   outline: none;
   height: 35px;
   width: 115px;
@@ -555,9 +569,11 @@ export default {
   border-radius: 7px;
   padding: 0px 5px 0px 10px;
 }
-.size{
+
+.size {
   margin: 0px 40px;
 }
+
 .color-option:hover {
   background: #efefef;
 }
@@ -565,10 +581,7 @@ export default {
 .color-option {
   padding: 0px 20px;
   height: 40px;
-  //font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+//font-weight: 600; display: flex; align-items: center; justify-content: space-around;
   border-radius: 10px;
   cursor: pointer;
   transition: .1s;
@@ -662,12 +675,10 @@ export default {
 .tag a {
   text-decoration: none;
 }
-.advertising-box{
+
+.advertising-box {
   display: flex;
-  //width: 24%;
-  margin: 10px 5px;
-  //max-height: 300px;
-height: 300px;
+//width: 24%; margin: 10px 5px; //max-height: 300px; height: 300px;
 }
 
 .picContent {
@@ -690,7 +701,6 @@ height: 300px;
   /*border: 1px solid black;*/
   margin-bottom: 20px;
 }
-
 
 
 .imgbox {

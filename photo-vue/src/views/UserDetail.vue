@@ -36,7 +36,8 @@
               </div>
             </div>
           </div>
-          <el-tooltip v-if="authorInfo.userId!==this.$store.state.currentUser.userId" placement="top-start" content="发送消息" effect="dark">
+          <el-tooltip v-if="authorInfo.userId!==this.$store.state.currentUser.userId" placement="top-start"
+                      content="发送消息" effect="dark">
 
             <div class="messageBox" @click="sendMsgDialog=true">
               <i class="fa-solid fa-comments"></i>
@@ -137,12 +138,14 @@
       width="450px"
       center>
       <div style="align-items: center">
-      <div style="font-weight: 600;font-size: 16px;margin-bottom: 10px">主题:</div><el-input placeholder="添加一个主题"  v-model="theme"></el-input>
+        <div style="font-weight: 600;font-size: 16px;margin-bottom: 10px">主题:</div>
+        <el-input placeholder="添加一个主题" v-model="theme"></el-input>
       </div>
 
       <div>
         <div style="font-weight: 600;font-size: 16px;margin-bottom: 10px;margin-top: 20px">消息:</div>
-        <el-input  type="textarea" maxlength="1000" show-word-limit  :autosize="{ minRows: 4, maxRows: 100}" placeholder="输入内容"  v-model="content"></el-input>
+        <el-input type="textarea" maxlength="1000" show-word-limit :autosize="{ minRows: 4, maxRows: 100}"
+                  placeholder="输入内容" v-model="content"></el-input>
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -171,8 +174,8 @@ export default {
       isShowNew: false,
       sendMsgDialog: false,
       saveImageDialog: false,
-      theme:"",
-      content:'',
+      theme: "",
+      content: '',
       newFavName: '',
       saveFavList: [],
       favLists: [],
@@ -200,24 +203,24 @@ export default {
 
     },
     sendMsg() {
-      const data={
-        title:this.theme,
-        senderId:this.$store.state.currentUser.userId,
-        sender:this.$store.state.currentUser.nickname,
-        receiverId:this.authorId,
-        content:this.content
+      const data = {
+        title: this.theme,
+        senderId: this.$store.state.currentUser.userId,
+        sender: this.$store.state.currentUser.nickname,
+        receiverId: this.authorId,
+        content: this.content
       }
 
-    api.post("/api/notifications",data).then((res)=>{
-      console.log(res)
-      this.$message({
-        message:'操作成功',
-        type:'success'
-      })
-      this.sendMsgDialog=false
-    }).catch((err)=>{
+      api.post("/api/notifications", data).then((res) => {
+        console.log(res)
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.sendMsgDialog = false
+      }).catch((err) => {
 
-    })
+      })
 
     },
     handleClickMark(data) {
@@ -394,9 +397,11 @@ export default {
       }).then(function (res) {
 
         api.get("/api/picture/likeAndFav/images").then(function (res2) {
-          for (let i1 = 0; i1 < res.data.data.data.length; i1++) {
-            res.data.data.data[i1].isLike = !!res2.data.data.likePicIdList.includes(res.data.data.data[i1].picId);
-            res.data.data.data[i1].isFav = !!res2.data.data.favPicIdList.includes(res.data.data.data[i1].picId);
+          if (res2.data.data !== undefined) {
+            for (let i1 = 0; i1 < res.data.data.data.length; i1++) {
+              res.data.data.data[i1].isLike = !!res2.data.data.likePicIdList.includes(res.data.data.data[i1].picId);
+              res.data.data.data[i1].isFav = !!res2.data.data.favPicIdList.includes(res.data.data.data[i1].picId);
+            }
           }
           vm.pictureInfos.splice(0, vm.pictureInfos.length, ...res.data.data.data)
 
@@ -514,8 +519,7 @@ export default {
 
 .topImg {
   position: relative;
-//background-image: url("../img/headImage.jpg"); background-size: cover;
-  z-index: 0;
+//background-image: url("../img/headImage.jpg"); background-size: cover; z-index: 0;
   width: 100%;
   height: 240px;
   display: flex;

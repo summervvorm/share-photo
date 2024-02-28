@@ -21,7 +21,7 @@
     </el-image>
     <div class="imgBot" :style="imgBotStyle">
       <div class="tag" v-for="item in itemprop.tags" :key="item.tagId">
-        <router-link  :to="{ path: '/Search/'+item.tagName}" custom v-slot="{ navigate }" >
+        <router-link :to="{ path: '/Search/'+item.tagName}" custom v-slot="{ navigate }">
           <span @click="navigate" @keypress.enter="navigate" role="link">{{ item.tagName }}</span>
         </router-link>
       </div>
@@ -97,7 +97,7 @@ export default {
       // 	this.checkFav = true
       //
       // }
-      if (this.$store.state.currentUser === null) {
+      if (this.$store.state.currentUser === null || this.$store.state.currentUser === undefined) {
         pubsub.publish('getLoginSign', true)
       } else {
         this.$emit('clickMark', this.itemprop)
@@ -107,7 +107,7 @@ export default {
       const vm = this
 
       // console.log(this.$store.state.showLoginDialog)
-      if (this.$store.state.currentUser === null) {
+      if (this.$store.state.currentUser === null || this.$store.state.currentUser === undefined) {
         pubsub.publish('getLoginSign', true)
       } else {
         let userId = this.$store.state.currentUser.userId
@@ -144,8 +144,6 @@ export default {
         opacity: 0,
       }
     },
-
-
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {

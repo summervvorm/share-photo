@@ -387,8 +387,10 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public int downloadPic(int i, Long picId) {
+        if(UserUtil.getUserDetailsDTO()==null) {
+            return 0;
+        }
         int userId = UserUtil.getUserDetailsDTO().getUserId();
-
         Object temp = redisService.hGet(DOWNLOAD_USER, String.valueOf(userId));
 
         int count = 0;
